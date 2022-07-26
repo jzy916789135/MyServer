@@ -24,7 +24,7 @@ Linux 下C++轻量级Web服务器
 
 > * C/C++
 > * B/S模型
-> * [线程同步机制包装类](https://github.com/jzy916789135/MyServer/lock.h)
+> * [线程同步机制包装类](https://github.com/jzy916789135/MyServer/locker.h)
 > * [http连接请求处理类](https://github.com/jzy916789135/MyServer/http)
 > * [半同步/半反应堆线程池](https://github.com/jzy916789135/MyServer/threadpool)
 > * [定时器处理非活动连接](https://github.com/jzy916789135/MyServer/timer)
