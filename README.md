@@ -17,17 +17,16 @@ Linux 下C++轻量级Web服务器
 -----
 
 | [概述](#概述) | [压力测试](#压力测试) | [快速运行](#快速运行) |[致谢](#致谢) |
-|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
 
 概述
 ----------
 
 > * C/C++
 > * B/S模型
-> * [线程同步机制包装类](https://github.com/jzy916789135/MyServer/locker.h)
-> * [http连接请求处理类](https://github.com/jzy916789135/MyServer/http)
-> * [半同步/半反应堆线程池](https://github.com/jzy916789135/MyServer/threadpool)
-> * [定时器处理非活动连接](https://github.com/jzy916789135/MyServer/timer)
+> * [线程同步机制包装类](https://github.com/jzy916789135/MyServer/tree/master/locker.h)
+> * [http连接请求处理类](https://github.com/jzy916789135/MyServer/tree/master/http)
+> * [半同步/半反应堆线程池](https://github.com/jzy916789135/MyServer/tree/master/threadpool)
+> * [定时器处理非活动连接](https://github.com/jzy916789135/MyServer/tree/master/timer)
 
 
 压力测试
@@ -75,5 +74,5 @@ Requests: 75803 susceed, 0 failed.
 ------------
 Linux高性能服务器编程，游双著.
 
-感谢以下朋友的PR和帮助: [@qinguoyi](https://github.com/qinguoyi)
+感谢以下朋友的帮助: [@qinguoyi](https://github.com/qinguoyi)
 
