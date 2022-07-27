@@ -23,8 +23,9 @@
 #include <map>
 #include <iostream>
 
-#include "../locker.h"
+//#include "../locker.h"
 #include "../timer/timer.h"
+#include "../log/log.h"
 
 using namespace std;
 

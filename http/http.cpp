@@ -16,8 +16,8 @@ const char *error_404_form = "The requested file was not found on this server.\n
 const char *error_500_title = "Internal Error";
 const char *error_500_form = "There was an unusual problem serving the request file.\n";
 
-locker lock;
-map<string, string> users;
+//locker lock;
+//map<string, string> users;
 
 int setNonBlocking(int fd)
 {
@@ -121,7 +121,7 @@ http::LINE_STATUS http::parseLine()
     for(; mcheckedIdx < mreadIdx; ++mcheckedIdx)
     {
         tmp = mreadBuf[mcheckedIdx];
-	//hui che
+	//Enter
 	if(tmp == '\r')
 	{
 	    if((mcheckedIdx + 1) == mreadIdx)
@@ -251,7 +251,7 @@ http::HTTP_CODE http::parseHeaders(char *text)
 
     else
     {
-        //std::cout << " unknow header : " << text << std::endl;
+        LOG_INFO("oop!unknow header: %s", text);
     }
 
     return NO_REQUEST;
@@ -279,6 +279,7 @@ http::HTTP_CODE http::processRead()
     {
 	text = getLine();
 	mstartLine = mcheckedIdx;
+        LOG_INFO("%s", text);
 	switch(mcheckState)
 	{
 	    //mcheckState has been set CHECK_STATE_REQUESTLINE first in init();
@@ -455,6 +456,8 @@ bool http::addResponse(const char *format, ...)
     }
     mwriteIdx += len;
     va_end(arg);
+
+    LOG_INFO("request:%s", mwriteBuf);
     return true;
 }
 

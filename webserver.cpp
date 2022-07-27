@@ -33,10 +33,24 @@ webServer::~webServer()
     delete pool;
 }
 
-void webServer::init(int _port, int _threadNum)
+void webServer::init(int _port, int _threadNum, int _logFlag, int _logWriteType)
 {
     port = _port;
     threadNum = _threadNum;
+
+    logFlag = _logFlag;
+    logWriteType =  _logWriteType;
+}
+
+void webServer::initLog()
+{
+    if(logFlag == 0)
+    {
+	if(logWriteType == 1)
+	    log::getInstance()->init("./ServerLog", logFlag, 2000, 800000, 800);
+	else
+	    log::getInstance()->init("./ServerLog", logFlag, 2000, 800000, 0);
+    }
 }
 
 void webServer::initThreadpool()
@@ -118,6 +132,7 @@ void webServer::adjustTimer(utilTimer *timer)
    time_t cur = time(NULL);
    timer->expire = cur + 3 * TIMESLOT;
    utils.timerList.adjustTimer(timer);
+   LOG_INFO("%s", "adjust timer once");
 }
 
 // delete timer
@@ -129,6 +144,7 @@ void webServer::delTimer(utilTimer *timer, int sockfd)
     {
         utils.timerList.delTimer(timer);
     }
+    LOG_INFO("close fd %d", userTimer[sockfd].sockfd);
 }
 
 bool webServer::dealNewConnection()
@@ -139,12 +155,12 @@ bool webServer::dealNewConnection()
     int connfd = accept(listenfd, (struct sockaddr *)&clientAddress, &clientAddrLen);
     if(connfd < 0)
     {
-        std::cout << " accept error " << std::endl;
+        LOG_ERROR("%s:errno is:%d", "accept error", errno);
         return false;
     }
     if(http::userCount >= MAX_FD)
     {
-        std::cout << " Inernal server busy " << std::endl;
+        LOG_ERROR("%s", "Internal server busy");
         return false;
     }
     timer(connfd, clientAddress);
@@ -189,6 +205,7 @@ void webServer::dealRead(int sockfd)
     utilTimer *timer = userTimer[sockfd].timer;
     if(users[sockfd].readOnce())
     {
+        LOG_INFO("deal with the client(%s)", inet_ntoa(users[sockfd].getAddress()->sin_addr));
         pool->append(users + sockfd, 0);
 	if(timer)
 	{
@@ -206,6 +223,7 @@ void webServer::dealWrite(int sockfd)
     utilTimer *timer = userTimer[sockfd].timer;
     if(users[sockfd].write())
     {
+	LOG_INFO("send data to the client(%s)", inet_ntoa(users[sockfd].getAddress()->sin_addr));
         if(timer)
 	    adjustTimer(timer);
     }
@@ -223,6 +241,7 @@ void webServer::eventLoop()
         int number = epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
         if(number < 0 && errno != EINTR)
 	{
+	    LOG_ERROR("%s", "epoll failure");
 	    break;
 	}
 	for(int i = 0; i < number; i++)
@@ -232,7 +251,6 @@ void webServer::eventLoop()
 	    // deal new connection
 	    if(sockfd == listenfd)
 	    {
-		//std::cout << " new"  << std::endl;
 		bool flag = dealNewConnection();
 		if(flag == false)
 		    continue;
@@ -241,7 +259,6 @@ void webServer::eventLoop()
 	    // close connection
 	    else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
 	    {
-		// close connection, and remove timer
 		utilTimer *timer = userTimer[sockfd].timer;
 		delTimer(timer, sockfd);
 	    }
@@ -249,21 +266,18 @@ void webServer::eventLoop()
 	    // deal sig
 	    else if((sockfd == pipefd[0]) && (events[i].events & EPOLLIN))
 	    {
-		//std::cout << " deal sig"  << std::endl;
 	        bool flag = dealSignal(timeout, stopServer);
 		if(flag == false)
-		    std::cout << " dealSig failure " << std::endl;
+		    LOG_ERROR("%s", "dealclientdata failure");
 	    }
 	    
 	    // deal data from user connection
 	    else if(events[i].events & EPOLLIN)
 	    {
-		//std::cout << " deal read"  << std::endl;
 	        dealRead(sockfd);
 	    }
 	    else if(events[i].events & EPOLLOUT)
 	    {
-		//std::cout << " deal write"  << std::endl;
 	        dealWrite(sockfd);
 	    }
 
@@ -272,6 +286,8 @@ void webServer::eventLoop()
 	if(timeout)
 	{
 	    utils.timerHandler();
+
+	    LOG_INFO("%s", "timer tick");
 
 	    timeout = false;
 	}

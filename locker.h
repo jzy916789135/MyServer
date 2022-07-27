@@ -69,4 +69,37 @@ private:
     pthread_mutex_t mmutex;
 };
 
+class cond
+{
+public:
+    cond()
+    {
+        if(pthread_cond_init(&mcond, NULL) != 0)
+        {
+            throw std::exception();
+        }
+    }
+    ~cond()
+    {
+	pthread_cond_destroy(&mcond);
+    }
+
+    bool wait(pthread_mutex_t *mutex)
+    {
+	int ret = 0;
+	ret = pthread_cond_wait(&mcond, mutex);
+	return ret == 0;
+    }
+    bool signal()
+    {
+        return pthread_cond_signal(&mcond) == 0;
+    }
+    bool broadcast()
+    {
+        return pthread_cond_broadcast(&mcond) == 0;
+    }
+private:
+    pthread_cond_t mcond;
+};
+
 #endif

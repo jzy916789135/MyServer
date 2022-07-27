@@ -105,7 +105,6 @@ int sortTimerList::tick()
 
     time_t cur = time(NULL);
     utilTimer *tmp = head;
-    std::cout << " tick begin() " << std::endl;
     while(tmp)
     {
         if(cur < tmp->expire)

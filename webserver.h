@@ -12,7 +12,6 @@
 #include <cassert>
 #include <sys/epoll.h>
 
-#include "./timer/timer.h"
 #include "./threadpool/threadpool.h"
 #include "./http/http.h"
 
@@ -26,12 +25,13 @@ public:
     webServer();
     ~webServer();
 
-    void init(int _port, int _threadNum);
+    void init(int _port, int _threadNum, int _logFlag, int _logWriteType);
 
     void initThreadpool();
-
+    void initLog();
     void eventListen();
     void eventLoop();
+
     void timer(int connfd, struct sockaddr_in _clientAddress);
     void adjustTimer(utilTimer *timer);
     void delTimer(utilTimer *timer, int sockfd);
@@ -50,6 +50,8 @@ public:
     int pipefd[2];
     http* users;
 
+    int logFlag;
+    int logWriteType;
     // about threadpoll
     threadpool<http> *pool;
     int threadNum;

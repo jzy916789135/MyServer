@@ -8,27 +8,18 @@
 using namespace std;
 
 
-
-class test
-{
-public:
-    test() {mstate = 0; testnum = 0;}
-    ~test() {}
-    void show();
-
-    int mstate;
-    int testnum;
-    char name[10];
-};
-
-
 int main(int argc, char *argv[])
 {
+
     int port = 9006;
     int threadNum = 8;
+    int logflag = 0;
+    int logwritetype = 1; 
     webServer server;
 
-    server.init(port, threadNum);
+    server.init(port, threadNum, logflag, logwritetype);
+
+    server.initLog();
 
     server.initThreadpool();
 
@@ -37,5 +28,4 @@ int main(int argc, char *argv[])
     server.eventLoop();
 
     return 0;
-
 }
