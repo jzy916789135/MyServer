@@ -1,32 +1,33 @@
 ## This ia a simple webserver
 
-本服务器是按照作者 https://github.com/qinguoyi/TinyWebServer 的思想结构来进行编写的
+本服务器是按照作者 [@qinguoyi](https://github.com/qinguoyi) 的思想结构来进行编写的
 
 Mywebserver
 -------------
 Linux 下C++轻量级Web服务器
 
-* 使用 **线程池 + 非阻塞socket + epoll(暂时LT实现) + 事件处理(暂时Proactor均实现)** 的并发模型
+* 使用 **线程池 + 非阻塞socket + epoll(暂时LT实现) + 事件处理(暂时Proactor实现)** 的并发模型
 * 使用 **状态机** 解析HTTP请求报文，支持解析**GET和POST**请求
 * 可以请求服务器**图片和视频文件**, 暂时没添加数据库操作
-* 原作者的日志操作也省去,后续会进行添加
+* 实现了 **同步/异步** 可设置的日志系统，记录服务器运行状态
 * 经Webbench压力测试可以实现**上万的并发连接**数据交换
 
 
 目录
 -----
 
-| [概述](#概述) | [压力测试](#压力测试) | [快速运行](#快速运行) |[致谢](#致谢) |
+| [概述](#概述) | [压力测试](#压力测试) | [快速运行](#快速运行) | [个性化设置](#个性化设置) |[致谢](#致谢) |
 
 概述
 ----------
 
-> * C/C++
+> * C/C++/html
 > * B/S模型
 > * [线程同步机制包装类](https://github.com/jzy916789135/MyServer/tree/master/locker.h)
 > * [http连接请求处理类](https://github.com/jzy916789135/MyServer/tree/master/http)
 > * [半同步/半反应堆线程池](https://github.com/jzy916789135/MyServer/tree/master/threadpool)
 > * [定时器处理非活动连接](https://github.com/jzy916789135/MyServer/tree/master/timer)
+> * [同步/异步日志系统](https://github.com/jzy916789135/MyServer/tree/master/log)
 
 
 压力测试
@@ -70,9 +71,31 @@ Requests: 75803 susceed, 0 failed.
 
 	* 默认端口：9006
 
+
+个性化设置
+
+------
+目前所有支持的设置均在main（）函数中进行一次设置
+* 自定义端口号
+```C++
+  port  //
+```
+* 选择日志写入方式
+```C++
+  logWriteType // 0，同步写入; 1，异步写入
+```
+* -t，线程数量
+```C++
+  threadNum // 
+```
+* 关闭日志
+```C++
+  logFlag // 0，打开日志; 1，关闭日志
+```
+
+
 致谢
 ------------
-Linux高性能服务器编程，游双著.
 
-感谢以下朋友的帮助: [@qinguoyi](https://github.com/qinguoyi)
+感谢以下朋友: [@qinguoyi](https://github.com/qinguoyi)
 
